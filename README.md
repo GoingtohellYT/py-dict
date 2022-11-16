@@ -8,4 +8,4 @@ How to use py-dict:
 
 Supported languages:
 - French
-- English to come soon
+- English
