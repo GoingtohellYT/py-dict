@@ -164,10 +164,16 @@ def read_file(file):
     if word == "/all":
         for line in f.readlines():
             expression = line.split(";")
+
             try:
-                expression.remove('\n')
+                expression.remove("\n")
             except ValueError:
-                pass
+                try:
+                    expression = "".join(expression)
+                    expression = expression.split(".")
+                    expression.remove("\n")
+                except:
+                    pass
             # print(expression)
             print(''.join(expression))
     else:
@@ -175,10 +181,16 @@ def read_file(file):
         for line in f.readlines():
             if word in line:
                 expression = line.split(";")
+
                 try:
-                    expression.remove('\n')
+                    expression.remove("\n")
                 except ValueError:
-                    pass
+                    try:
+                        expression = "".join(expression)
+                        expression = expression.split(".")
+                        expression.remove('\n')
+                    except:
+                        pass
                 # print(expression)
                 print(''.join(expression))
     return
@@ -225,6 +237,12 @@ def append_to_file(file):
         if prog_display == "column":
             words = to_translate.split("/")
 
+    # On demande la nature du mot à traduire
+    if prog_language == "default" or prog_language == 'fr':
+        to_translate_class = input("Entrez la nature du mot à traduire : ").lower()
+    elif prog_language == "eng":
+        to_translate_class = input("Enter the grammatical class of the word to translate: ").lower()
+
     if prog_language == "default" or prog_language == "fr":
         translated = input(
             "Entrez le mot dans la langue traduite (vous pouvez entrer plusieurs traductions du même mot en les séparant par un \"/\") : ").lower()
@@ -245,22 +263,28 @@ def append_to_file(file):
         elif prog_display == "column":
             translations = translated.split("/")
 
+    # On demande la nature du mot traduit
+    if prog_language == "default" or prog_language == 'fr':
+        translated_class = input("Entrez la nature du mot traduit : ").lower()
+    elif prog_language == "eng":
+        translated_class = input("Enter the translation's grammatical class: ").lower()
+
     # On modifie la syntaxe des expressions pour pouvoir utiliser la fonction "split" sur les ";" plus tard
     if "/" in to_translate and "/" in translated and prog_display == "column":
         for word in words:
             for translation in translations:
-                line = word + "; = " + translation + ";" + "\n"
+                line = word + "; " + f"({to_translate_class})." + " = " + translation + "; " + f"({translated_class})." + "\n"
                 f.write(line)
     elif "/" in to_translate and "/" not in translated and prog_display == "column":
         for word in words:
-            line = word + "; = " + translated + ";" + "\n"
+            line = word + "; " + f"({to_translate_class})." + " = " + translated + "; " + f"({translated_class})." + "\n"
             f.write(line)
     elif "/" not in to_translate and "/" in translated and prog_display == "column":
         for translation in translations:
-            line = to_translate + "; = " + translation + ";" + "\n"
+            line = to_translate + "; " + f"({to_translate_class})." + " = " + translation + "; " + f"({translated_class})." + "\n"
             f.write(line)
     else:
-        line = to_translate + "; = " + translated + ";" + '\n'
+        line = to_translate + "; " + f"({to_translate_class})." + " = " + translated + "; " + f"({translated_class})." + '\n'
         f.write(line)
 
     if prog_language == "default" or prog_language == "fr":
